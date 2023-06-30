@@ -1,0 +1,55 @@
+
+
+
+import java.util.*;
+
+class Solution {
+    public int FlipFlip(int n, int[] A,int K) {
+        int pre[] = new int[n];
+		// This array will tell that the certain position is flipped how many times 
+		Queue<Integer> qt = new LinkedList<>();
+		// Here I will push the end of the subarray 
+		// It stores the end index of the flip 
+		
+		int flip = 0;
+		for(int i=0; i<n; i++)
+		{
+			if(i!= 0)		
+				pre[i] = pre[i-1];
+			// that ith index is flipped as many times as i-1 th is flipped
+			if(!qt.isEmpty() && qt.peek()<i)
+			{
+				qt.poll();
+				pre[i]--;
+			}
+			if(((pre[i]%2)^A[i])==0) // i is zero 
+			{
+				flip++;
+				pre[i] ++;
+				qt.add(i+K-1);
+			}
+		}
+		while(!qt.isEmpty())
+		{
+			if(qt.peek()>=n)
+				return -1;
+			qt.poll();
+		}
+		return flip;
+    }
+}
+public class Main{
+    public static void main(String[] args) throws Exception {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+         int k = sc.nextInt();
+        sc.close();
+        Solution Obj = new Solution();
+		int a=Obj.FlipFlip(n,arr,k);
+        System.out.print(a+" ");
+		}
+}

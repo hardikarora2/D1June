@@ -1,0 +1,96 @@
+import java.util.*;
+import static java.lang.Math.ceil;
+
+class Solution {
+    public int[] CountRounds(int[] arr, int[][] queries) {
+        // Write your code here
+		int n = arr.length;
+		int m = queries.length;
+
+		ArrayList<Integer> al = new ArrayList<>();
+		for(int i=0; i<n; i++)
+			al.add(arr[i]);
+
+		int positions[] = new int[n+2];
+
+		positions[0] = 0;
+		positions[n+1] = n+1;
+
+		for(int i=0; i<n; i++)
+			positions[arr[i]] = i+1;
+
+		int totalround = 1;
+
+		for(int i=2; i<=n; i++)
+		{
+			if(positions[i]<positions[i-1])
+			totalround++;
+		}
+		
+		int ans[] = new int[m];
+		for(int i=0; i<m; i++)
+		{
+			int first = queries[i][0];
+			int second = queries[i][1];
+
+			int firstval = al.get(first-1);
+			int secondval = al.get(second-1);
+
+			if(positions[firstval-1]>positions[firstval])
+				totalround--;
+
+			if(positions[firstval]>positions[firstval+1])
+				totalround--;
+
+			if(secondval-1!= firstval && positions[secondval-1]>positions[secondval])
+				totalround--;
+
+			if(secondval+1!= firstval && positions[secondval]>positions[secondval+1])
+				totalround--;
+
+			positions[firstval] = second;
+			positions[secondval] = first;
+			
+			int temp = al.get(first-1);
+			al.set(first-1,al.get(second-1));
+			al.set(second-1, temp);
+
+			if(positions[firstval-1]>positions[firstval])
+				totalround++;
+
+			if(positions[firstval]>positions[firstval+1])
+				totalround++;
+
+			if(secondval-1!= firstval && positions[secondval-1]>positions[secondval])
+				totalround++;
+
+			if(secondval+1!= firstval && positions[secondval]>positions[secondval+1])
+				totalround++;
+
+			ans[i] = totalround;
+		}
+
+		return ans;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int[] arr = new int[n];
+        for(int i = 0; i < n; i++)
+            arr[i] = sc.nextInt();
+        int[][] queries = new int[m][2];
+        for(int i = 0; i< m; i++) {
+            queries[i][0] = sc.nextInt();
+            queries[i][1] = sc.nextInt();
+        }
+        Solution Obj = new Solution();
+        int[] ans = Obj.CountRounds(arr, queries);
+
+        for(int a: ans)
+            System.out.println(a);
+    }
+}

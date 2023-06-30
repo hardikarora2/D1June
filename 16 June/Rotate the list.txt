@@ -1,0 +1,98 @@
+import java.io.*;
+import java.util.*;
+ 
+class Node{
+    int data;
+    Node next;
+    Node(int data){
+        this.data = data;
+        next = null;
+    }
+}
+class LinkedList{
+    Node head;
+    void add(int data ){
+        Node new_node = new Node(data);
+        if(head == null){
+            head = new_node;
+            return;
+        }
+        Node current = head;
+        while(current.next !=null){
+            current = current.next;
+        }
+        current.next = new_node;
+    }
+}
+
+class Solution {
+    
+    static Node rotateRight(Node head, int k) {
+		if(head == null || head.next == null)
+			return head;
+	    int len = 0;
+		Node itr = head;
+		while(itr!= null)
+		{
+			len ++;
+			itr = itr.next;
+		}
+
+		k%= len;
+
+		if(k==0)
+			return head;
+		// now break the (len-k)th link 
+		// connect the last and the first pointer
+
+		//connection
+		itr = head;
+		while(itr.next != null)
+			{
+				itr = itr.next;
+			}
+		//came to the last node 
+		itr.next = head;
+
+		// //delete the connection in between 
+
+		itr = head ;
+		int cnt = 1;
+		while(itr!= null)
+		{
+			if(cnt== (len -k))
+			{
+				Node brk = itr.next;
+				itr.next = null;
+				return brk;
+					// break;
+			}
+			cnt++;
+			itr = itr.next;
+		}
+
+		return head;
+		
+    }
+}
+public class Main {
+    
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        LinkedList l1= new LinkedList();
+        for(int i=0;i<n;i++){
+            l1.add(sc.nextInt());
+        }
+        Solution Ob = new Solution();
+        int k = sc.nextInt();
+        Node x = Ob.rotateRight(l1.head, k);
+
+		// Node x = l1.head;
+		while(x!= null)
+			{
+				System.out.print(x.data+ " ");
+				x = x.next;
+			}
+    }
+}

@@ -1,0 +1,91 @@
+import java.util.*;
+
+
+
+class Solution {
+	public static boolean check(int val, List<Integer> a, int arr[])
+	{
+		if(val==0)
+			return true;
+		
+		int n = a.size();
+		// int arr[] = new int[n];
+
+		int ind = 1;
+		for(int i=0; i<val; i++)
+		{
+			arr[ind] = a.get(i);
+			ind+=2;
+		}
+
+		int pt = 0;
+		// arr[i] if it is 0 means nothing is assigned to 
+		for(int i = val; i<n;)
+		{
+			if(arr[pt]==0)
+			{
+				arr[pt] = a.get(i);
+				i++;
+				pt++;
+			}
+			else
+			{
+				pt++;
+			}
+		}
+		int cnt = 0;
+		for(int i=1; i<n-1; i++)
+		{
+			if(arr[i]<arr[i-1] && arr[i]<arr[i+1])
+				cnt++;
+		}
+
+		// System.out.println(val);
+		// for(int i=0; i<n; i++)
+		// 	System.out.print(arr[i] + " ");
+		// System.out.println();
+		return (cnt==val);
+	}
+	
+     public static void cheapProduct(List<Integer> a) {
+		int n = a.size();
+		 int st = 0;
+		 int end = n/2;
+		int ans = -1;
+		 int val[] = new int[n];
+		Collections.sort(a);
+		 
+		 while(st<=end)
+		 {
+			int mid = (st+end)/2;
+			 int temp[] = new int[n];
+			 if(check(mid,a, temp)==true)
+			 {
+				 ans = mid;
+				 st = mid+1;
+				 val = temp;
+			 }
+			 else
+				 end = mid-1;
+		 }
+
+		 System.out.println(ans);
+		 for(int i=0; i<n; i++)
+			System.out.print(val[i] + " ");
+		System.out.println();
+     }
+   
+}
+
+
+
+class Main {
+    public static void main(String[] args) {
+      Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        ArrayList<Integer> arr1 = new ArrayList<Integer>();
+        for(int i=0; i<n; i++)
+            arr1.add(sc.nextInt());
+        Solution.cheapProduct(arr1);
+    }
+}

@@ -1,0 +1,94 @@
+// Working code for the Acctio portal
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+class Solution {
+    public static List<String> plant(List<String> grid) {
+        int n = grid.size();
+        int m = grid.get(0).length();
+        List<String> temp = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < m; j++) {
+                sb.append('O');
+            }
+            temp.add(sb.toString());
+        }
+        return temp;
+    }
+
+    public static List<String> det(List<String> grid) {
+        int dirx[] = {0, 1, -1, 0};
+        int diry[] = {1, 0, 0, -1};
+
+        int n = grid.size();
+        int m = grid.get(0).length();
+
+        List<String> cpy = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < m; j++) {
+                boolean flag = true;
+                if (grid.get(i).charAt(j) == 'O') {
+                    flag = false;
+                }
+                for (int k = 0; k < 4; k++) {
+                    int nx = i + dirx[k];
+                    int ny = j + diry[k];
+                    if (nx >= 0 && ny >= 0 && nx < n && ny < m) {
+                        if (grid.get(nx).charAt(ny) == 'O') {
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+                if (flag == false)
+                    sb.append('.');
+                else
+                    sb.append('O');
+            }
+            cpy.add(sb.toString());
+        }
+        return cpy;
+    }
+
+    public static List<String> bomberMan(int n, List<String> grid) {
+        if (n == 0 || n == 1)
+            return grid;
+
+        if (n % 2 == 0)
+            return plant(grid);
+
+        if (n % 4 == 3)
+            return det(grid);
+
+        if (n % 4 == 1)
+            return det(det(grid));
+
+        return grid;
+    }
+}
+public class Main
+{
+	public static void main (String[] args)
+	{
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+		int k = sc.nextInt();
+		sc.nextLine();
+		List<String> grid = new ArrayList<>();
+		for(int i = 0; i < n; i++) {
+			grid.add(sc.nextLine());
+		}
+		Solution obj = new Solution();
+		List<String> ans = obj.bomberMan(k, grid);
+		for(String str : ans) {
+			System.out.println(str);
+		}
+	}
+}
+
+

@@ -1,0 +1,121 @@
+import java.util.*;
+
+public class Main {
+
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    int n = sc.nextInt();
+    String[] arr = new String[n];
+    for (int i = 0; i < n; i++) arr[i] = sc.next();
+    int k = sc.nextInt();
+    sc.close();
+    BinaryTreeNode<Integer> tree = levelOrderCreateTree(arr);
+    System.out.println(timeToBurnTree(tree, k));
+  }
+
+  public static int timeToBurnTree(BinaryTreeNode<Integer> root, int start) {
+    // your code here
+	  BinaryTreeNode<Integer> startnode = null ;
+	  Queue<BinaryTreeNode<Integer>> qt = new LinkedList<>();
+	  HashMap<BinaryTreeNode<Integer>,BinaryTreeNode<Integer>> hm = new HashMap<>();
+	  qt.add(root);
+	  hm.put(root,null);
+	  
+	  while(!qt.isEmpty())
+	  {
+		BinaryTreeNode<Integer> temp = qt.poll();
+		  if(temp.data == start)
+			  startnode = temp;
+		  
+		  if(temp.left!= null)
+		  {
+			  hm.put(temp.left,temp);
+			  qt.add(temp.left);
+		  }
+		  if(temp.right!= null)
+		  {
+			  hm.put(temp.right,temp);
+			  qt.add(temp.right);
+		  }
+	  }
+
+	  // Now do one more bfs
+	  int ans = 0;
+	  qt.add(startnode);
+	  // the traversal would be bidirectional so I need a vis array 
+	  HashSet<BinaryTreeNode<Integer>> vis = new HashSet<>();
+	  vis.add(startnode);
+	  
+	  while(!qt.isEmpty())
+	  {
+		  int sz = qt.size(); // for uniquely identifying 
+
+		  for(int i=0; i<sz; i++)
+		  {
+			  BinaryTreeNode<Integer> temp = qt.poll();
+			  // System.out.print(temp.data + " ");
+			  BinaryTreeNode<Integer> par = hm.get(temp);
+			  if(temp.left!= null && !vis.contains(temp.left))
+			  {
+				  vis.add(temp.left);
+				  qt.add(temp.left);
+			  }
+			  if(temp.right!= null && !vis.contains(temp.right))
+			  {
+				  vis.add(temp.right);
+				  qt.add(temp.right);
+			  }
+			  if(par != null && !vis.contains(par))
+			  {
+				  vis.add(par);
+				  qt.add(par);
+			  }
+		  }
+		  // System.out.println();
+		  ans++;
+	  }
+	  return --ans;
+	  
+  }
+
+  static void createTree(BinaryTreeNode<Integer> node, int i, String[] arr) {
+    if (node != null) {
+      if (2 * i + 1 < arr.length) {
+        if (arr[2 * i + 1].equals("null")) {
+          node.left = null;
+        } else {
+          node.left = new BinaryTreeNode<>(Integer.parseInt(arr[2 * i + 1]));
+        }
+        createTree(node.left, 2 * i + 1, arr);
+      }
+      if (2 * i + 2 < arr.length) {
+        if (arr[2 * i + 2].equals("null")) {
+          node.right = null;
+        } else {
+          node.right = new BinaryTreeNode<>(Integer.parseInt((arr[2 * i + 2])));
+        }
+        createTree(node.right, 2 * i + 2, arr);
+      }
+    }
+  }
+
+  static BinaryTreeNode<Integer> levelOrderCreateTree(String[] arr) {
+    if (arr.length == 0) return null;
+    BinaryTreeNode<Integer> head = new BinaryTreeNode<>(
+      Integer.parseInt(arr[0])
+    );
+    createTree(head, 0, arr);
+    return head;
+  }
+}
+
+class BinaryTreeNode<T> {
+
+  T data;
+  BinaryTreeNode<T> left;
+  BinaryTreeNode<T> right;
+
+  public BinaryTreeNode(T data) {
+    this.data = data;
+  }
+}

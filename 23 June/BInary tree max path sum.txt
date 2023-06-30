@@ -1,0 +1,89 @@
+import java.util.*;
+
+class TreeNode {
+    int data;
+    TreeNode left, right;
+    public TreeNode(int data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class Solution{
+    static int max =0;
+	public static int solve(TreeNode root)
+	{
+		if(root==null)
+			return 0;
+
+		int lsum = solve(root.left);
+		int rsum = solve(root.right);
+
+		// lsum + rsum + root.data
+		// rsum + root.data 
+		// lsum + root.data
+		// root.data 
+		// int temp = Math.max(lsum,Math.max(rsum,0))+root.data;
+		// // int temp2 = Math.max(lsum+rsum,0)+root.data;
+		// max = Math.max(max,Math.max(lsum,lsum+rsum+root.data));
+		// return temp;
+		// max{max,lsum+rsum+root.data}
+
+		return lsum+rsum+root.data
+	}
+    public static int maxPathSum(TreeNode root) {
+		max =0;
+        solve(root);
+		return max;
+    }
+
+}
+
+
+
+class Main {
+    public static TreeNode buildTree(String str) {
+        if (str.length() == 0 || str.charAt(0) == 'N')
+            return null;
+
+        String[] nodes = str.split(" ");
+        Queue<TreeNode> queue = new LinkedList<>();
+        TreeNode root = new TreeNode(Integer.parseInt(nodes[0]));
+        queue.add(root);
+
+        int i = 1;
+        while (!queue.isEmpty() && i < nodes.length) {
+
+            TreeNode currNode = queue.poll();
+
+            String currVal = nodes[i];
+
+            if (!currVal.equals("N")) {
+                currNode.left = new TreeNode(Integer.parseInt(currVal));
+                queue.add(currNode.left);
+            }
+            i++;
+            if (i >= nodes.length)
+                break;
+            currVal = nodes[i];
+
+            if (!currVal.equals("N")) {
+                currNode.right = new TreeNode(Integer.parseInt(currVal));
+                queue.add(currNode.right);
+            }
+            i++;
+        }
+
+        return root;
+    }
+
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine();
+        TreeNode root = buildTree(s);
+        int maxPath = Solution.maxPathSum(root);
+        System.out.println(maxPath);
+    }
+}

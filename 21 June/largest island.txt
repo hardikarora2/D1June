@@ -1,0 +1,182 @@
+import java.util.*;
+
+class Solution {
+	static class Pair
+	{
+		int i,j;
+		Pair(int x, int y)
+		{
+			i=x;
+			j=y;
+		}
+	}
+	// dirx, diry for the iterating in all 4 directions
+	static int dirx[] = {0,0,-1,1};
+	static int diry[] = {-1,1,0,0};
+	
+	//calling landnum inorder to store the island number
+	static int landnum = 1;
+	
+	public static int bfs(int i, int j, int[][] A, boolean [][]vis, int[][] landnums)
+	{
+		int n = A.length;
+		// taking area is 1 bcoz we have already considered the pt i,j
+		int area = 1;
+		
+		//queue for iterating the bfs 
+		Queue<Pair> qt = new LinkedList<>();
+
+		//marking the first element vis and pushing it into the queue
+		vis[i][j]=true;
+		qt.add(new Pair(i,j));
+
+		//stack for storing the visited elements in this iteration 
+		// or in this bfs call
+		// instead of stack you can take al,hashset,treeset,hashmap,treemap
+		// deque queue priorityqueue
+		// My need is that I just need a container to store the indexed which are a part of an island
+		// i.e any ds to store the visited elements
+		Stack<Pair> st = new Stack<>();
+		st.push(new Pair(i,j));
+
+		
+		while(!qt.isEmpty())
+		{
+			//removed the top element
+			Pair temp = qt.poll();
+			int x = temp.i;
+			int y = temp.j;
+
+			//iterating in 4 directions
+			for(int r=0; r<4; r++)
+			{
+				int nx = x+dirx[r];
+				int ny = y+diry[r];
+
+				//checking if the new coordis are valid or not
+				// it shouldn't be out of bounds a
+				// shouldn't be visited and it should be water
+				
+				if(nx>=0 && ny>=0 && nx<n && ny<n && vis[nx][ny]==false && A[nx][ny]==1)
+				{
+					//adding it to queue and stack
+					qt.add(new Pair(nx,ny));
+					st.push(new Pair(nx,ny));
+					//incrementing the area because we got a valid connecting land 
+					area++;
+					vis[nx][ny]=true;
+				}
+			}
+			
+		}
+
+		//finding the elements to store area at the required indexes
+		while(!st.isEmpty())
+		{
+			// fetching the coordinates
+			int x = st.peek().i;
+			int y = st.peek().j;
+			// storing area on all the coordinates
+			A[x][y] = area;
+			//storing the landnumber for the particular land
+			landnums[x][y] = landnum;
+			st.pop();
+		}
+		//incrementing the landnum
+		landnum++;
+		return area;
+	}
+    public static int largestIsland(int[][] A)
+	{
+
+		landnum =0;
+		// reintialize the landnumber 
+		//purpose so that if there are any testcase then it 
+		// does not continue
+		
+		int n = A.length;
+		boolean vis[][] = new boolean [n][n];
+		// visited array for maintaining which element is vis
+		int landnums[][] = new int[n][n];
+		// storing the island_num so that we dont take the same
+		// island as two diff islands
+
+		int ans = 0;
+		for(int i=0; i<n; i++)
+		{
+			for(int j=0; j<n; j++)
+			{
+				if(A[i][j]==1 && vis[i][j] == false)	
+					ans =Math.max(ans,bfs(i,j,A,vis,landnums));
+				// I am considering the island area for the answer
+				//because there is a possiblity that we dont have water
+				//3
+				//1 1 1
+				//1 1 1
+				//1 1 1
+				// due to this we cannot enter the line 
+				// i.e A[i][j] == 0
+			}
+		}
+
+		
+		for(int i=0; i<n; i++)
+		{
+			for(int j=0; j<n; j++)
+			{
+				// checking for water 
+				// checking if this works as a bridge between 2 islands
+				if(A[i][j]==0)	
+				{
+					//hashset for storing the taken islands
+					HashSet<Integer> hs = new HashSet<>();
+					int tempans = 0;
+
+					//iterating in all the 4 directions
+					for(int k=0; k<4; k++)
+					{
+						int nx = i+dirx[k];
+						int ny = j+diry[k];
+						//checking for there validity
+						
+						if(!(nx>=0 && ny>=0 && nx<n && ny<n))
+							continue;
+
+						// area of the island of which nx,ny is a part
+						int landarea = A[nx][ny];
+						// landnum of the island of which nx,ny is a part
+						int islandnum = landnums[nx][ny];
+						// checking if there exists and island that hasn't been taken yet
+						if( landarea!=0 && !hs.contains(islandnum))
+						{
+							//add it to the tempans
+							tempans+=A[nx][ny];
+							//add nx,ny to hs because we have taken it
+							hs.add(islandnum);
+						}	
+					}
+					// adding 1 to tempans because nx,ny is changed from water to land
+					ans = Math.max(ans,tempans+1);
+				}
+			}
+		}
+		return ans;
+    }
+}
+
+public class Main {
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        int n;
+        n = sc.nextInt();
+        int[][] A = new int[n][n];
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                A[i][j] = sc.nextInt();
+            }
+        }
+        Solution Obj = new Solution();
+        int ans = Obj.largestIsland(A);
+        System.out.println(ans);
+    }
+}

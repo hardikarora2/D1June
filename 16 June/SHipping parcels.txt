@@ -1,0 +1,68 @@
+import java.util.*;
+
+class Solution {
+	static boolean check(int mid, int a[], int D)
+	{
+		int wt = 0;
+		
+		for(int i=0; i<a.length;i++)
+		{
+			if(wt+a[i]>mid)				
+			{
+				//this eans that the weight
+				//is not possible on this conveyor belt
+				wt=a[i];
+				D--; 
+				// because the current truck which we were loading is gone 
+				// has no space left 
+			}
+			else
+			wt+= a[i];
+		}
+		
+		if(D>=1)
+			return true;
+		return false;
+	}
+    static void minShippingWeight(int a[], int n,int D)
+    {
+        //Write your code here
+		int lo = 0;
+		int hi = 1000000000;
+		int ans = 0;
+
+		for(int i=0; i<n; i++)
+			lo = Math.max(lo,a[i]);
+		while(lo<=hi)
+		{
+			int mid = (hi+lo)/2;
+			if(check(mid,a,D)==true)
+			{
+				ans = mid;
+				hi = mid-1;
+			}
+			else
+				lo = mid+1;
+		}
+
+		// return ans;
+		System.out.println(ans);
+       
+    }
+
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n= sc.nextInt();
+        int D= sc.nextInt();
+        int array[] = new int[n];
+
+        for(int i=0; i<n; i++){
+            array[i]= sc.nextInt();
+        }
+        Solution Obj = new Solution();
+        Obj.minShippingWeight(array,n,D);
+    }
+}

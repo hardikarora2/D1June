@@ -1,0 +1,59 @@
+import java.util.*;
+public class Main {
+    public static void main(String args[]) {
+        Scanner input = new Scanner(System.in);
+        int n=input.nextInt();
+        input.nextLine();
+        StringBuilder str=new StringBuilder(input.nextLine());
+        
+        solve(str,n);
+
+        input.close();
+    }
+	static int[] aj = {2,3,5,7,11,13,17,19,23,29};
+	public static int check(StringBuilder str, int st, int end)
+	{
+		long num = 0;
+		for(int j=st; j<=end; j++)
+		{
+			num	= num*(long)(10);
+			num += (str.charAt(j)-'0');
+		}
+			
+		// Ill have the number 
+		if(num==0 || num==1)
+			return 0;
+		for(int i=0; i<aj.length; i++)
+		{
+			if(num==aj[i])	
+				return 1;
+			if(num%aj[i]==0)
+				return 0;
+		}
+		return 1;
+	}
+	public static int helper(StringBuilder str, int ind)
+	{
+		if(ind == str.length())
+			return 0;
+
+		
+		int ans = 0;
+		for(int i=1; i<=str.length()-ind; i++)
+		{
+			// i cant be zero as you cannot take 0 length string 
+			// itells the length of the string selected
+			// i tells how many chars have been selected from the start 
+			
+			ans = Math.max(ans,helper(str,ind+i)+check(str,ind,ind+i-1));
+		}
+		return ans;
+	}
+    public static void solve(StringBuilder str,int n){
+		// two ways are there 
+		//1. that I send the separted string and the next way 
+		// 2.  I'll send the indexes
+		int out = helper(str,0);
+		System.out.println(out);
+    }
+}
