@@ -1,0 +1,85 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int[][] grid = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                grid[i][j] = sc.nextInt();
+            }
+        }
+        Solution solution = new Solution();
+        System.out.println(solution.minimumEffortPath(grid));
+    }
+}
+
+class Solution {
+	// O(n*m*log(1e6))
+	static class Pair
+		{
+			int x;
+			int y;
+			Pair(int i, int j)
+			{
+				x=i; 
+				y=j;
+			}
+		}
+	int dirx[] = {0,0,-1,1};
+	int diry[] = {-1,1,0,0};
+	public boolean poss(int diff, int[][] heights)
+	{
+		int n = heights.length;
+		int m = heights[0].length;
+		
+		boolean vis[][] = new boolean[n][m];
+
+		//st for, 0 0 
+		vis[0][0] =true;
+		Queue<Pair> qt = new LinkedList<>();
+		qt.add(new Pair(0,0));
+
+		while(!qt.isEmpty())
+		{
+			Pair temp = qt.poll();
+			int x = temp.x;
+			int y = temp.y;
+
+			for(int i=0; i<4; i++)
+			{
+				int nx = x+dirx[i];
+				int ny = y+diry[i];
+
+				if(nx>=0 && nx<n && ny>=0 && ny<m && vis[nx][ny]==false && Math.abs(heights[x][y] - heights[nx][ny]) <=diff)
+					{
+						vis[nx][ny]=true;
+						qt.add(new Pair(nx,ny));
+					}
+			}
+		}
+		// dfs(0,0,diff,heights,vis);
+
+		return vis[n-1][m-1];
+	}
+    public int minimumEffortPath(int[][] heights) {
+
+		int st = 1;
+		int end = 1000000;
+		int ans = -1;
+		while(st<=end)
+		{
+			int mid = (st+end)/2;
+			if(poss(mid,heights)==true)
+			{
+				ans = mid;
+				end = mid-1;
+			}
+			else
+				st = mid+1;
+		}
+		return ans;
+    }
+}
